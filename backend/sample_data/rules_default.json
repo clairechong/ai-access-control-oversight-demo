@@ -1,0 +1,10 @@
+{
+  "allowed_approver_titles": ["IT Security", "Access Admin"],
+  "high_risk_min_distinct_approvals": 2,
+  "emergency_grace_minutes": 30,
+  "require_ticket_id": true,
+  "require_approved_outcome": true,
+  "no_self_approval": true,
+  "approval_must_be_before_change": true,
+  "contractor_requires_expiry": true
+}

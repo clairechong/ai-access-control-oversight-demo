@@ -1,0 +1,10 @@
+change_id,ticket_id,requester_id,user_id,user_type,risk_level,is_high_risk_role,change_type,timestamp,is_emergency,expiry_date
+CHG-001,TICK-1001,USR-101,USR-200,employee,low,,add_role,2024-01-15T10:00:00,false,
+CHG-002,,USR-102,USR-201,employee,low,,add_role,2024-01-15T10:05:00,false,
+CHG-003,TICK-1003,USR-103,USR-202,employee,high,true,grant_admin,2024-01-15T10:10:00,false,
+CHG-004,TICK-1004,USR-104,USR-203,employee,low,,add_role,2024-01-15T10:15:00,false,
+CHG-005,TICK-1005,USR-105,USR-204,employee,low,,add_role,2024-01-15T10:20:00,false,
+CHG-006,TICK-1006,USR-106,USR-205,employee,low,,add_role,2024-01-15T10:25:00,false,
+CHG-007,TICK-1007,USR-107,USR-206,employee,high,true,grant_admin,2024-01-15T10:30:00,false,
+CHG-008,TICK-1008,USR-108,CONTRACTOR-50,contractor,medium,,add_role,2024-01-15T10:35:00,false,
+CHG-009,TICK-1009,USR-109,USR-208,employee,high,true,grant_admin,2024-01-15T10:40:00,true,
