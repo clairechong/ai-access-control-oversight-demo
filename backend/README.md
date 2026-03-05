@@ -2,6 +2,13 @@
 
 Deterministic FastAPI service that evaluates access-change records against a compliance policy.
 
+## Live demo
+
+**UI:** https://control-scan-pro.base44.app
+
+> The UI requires the backend to be running and accessible via a public URL (e.g. ngrok).
+> Start the backend locally and run `ngrok http 8000`, then configure the Base44 app to point to the ngrok URL.
+
 ## Rules enforced
 
 | # | Rule | Risk level |
