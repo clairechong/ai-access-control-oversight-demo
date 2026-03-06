@@ -1,6 +1,6 @@
 # Audit AI Monitor
 
-Deterministic FastAPI service that evaluates access-change records against a compliance policy.
+A prototype continuous control monitor that evaluates access changes against compliance policy, flags exceptions for human review, and generates audit evidence — expanding human oversight without replacing human judgment.
 
 ## Live demo
 
