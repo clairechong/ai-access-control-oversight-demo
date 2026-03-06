@@ -9,6 +9,20 @@ Deterministic FastAPI service that evaluates access-change records against a com
 > The UI requires the backend to be running and accessible via a public URL (e.g. ngrok).
 > Start the backend locally and run `ngrok http 8000`, then configure the Base44 app to point to the ngrok URL.
 
+## Architecture
+
+**Frontend** — Base44 interface for demo workflow
+
+**Backend** — FastAPI service providing evaluation and policy translation
+
+**Core endpoints:**
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /sample_payload` | Initializes the demo environment |
+| `POST /policy_to_rules` | Translates policy text into structured rule configuration |
+| `POST /evaluate_json` | Evaluates access changes against approved rules |
+
 ## Rules enforced
 
 | # | Rule | Risk level |
