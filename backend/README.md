@@ -23,6 +23,16 @@ Deterministic FastAPI service that evaluates access-change records against a com
 | `POST /policy_to_rules` | Translates policy text into structured rule configuration |
 | `POST /evaluate_json` | Evaluates access changes against approved rules |
 
+## Design Philosophy
+
+The goal of this system is not to automate human judgment.
+
+Instead it expands what humans can oversee by enabling
+continuous evaluation of the full population of access activity.
+
+AI assists with interpretation and triage,
+while governance and accountability remain human responsibilities.
+
 ## Demo Workflow
 
 1. Load Demo Environment
