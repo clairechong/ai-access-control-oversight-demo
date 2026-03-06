@@ -23,6 +23,18 @@ Deterministic FastAPI service that evaluates access-change records against a com
 | `POST /policy_to_rules` | Translates policy text into structured rule configuration |
 | `POST /evaluate_json` | Evaluates access changes against approved rules |
 
+## Demo Workflow
+
+1. Load Demo Environment
+2. Run baseline evaluation against existing rules
+3. Review flagged exceptions and AI triage summaries
+4. Introduce new policy requirement
+5. Generate proposed rule configuration
+6. Approve rule configuration
+7. Re-run evaluation
+8. Observe previously valid change now failing
+9. Generate audit memo and evidence output
+
 ## Rules enforced
 
 | # | Rule | Risk level |
