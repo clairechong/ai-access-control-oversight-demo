@@ -2,9 +2,9 @@
 ai_extractor.py — extract a validated Rules object from policy text.
 
 Three-tier extraction (in order):
-  1. AI (OpenAI)            — if OPENAI_API_KEY is set and openai package installed
-  2. Deterministic parser   — regex extraction of known policy phrases (no API needed)
-  3. FALLBACK_RULES         — hardcoded safe defaults when neither above yields results
+  1. AI (Anthropic Claude) — if ANTHROPIC_API_KEY is set and anthropic package installed
+  2. Deterministic parser  — regex extraction of known policy phrases (no API needed)
+  3. FALLBACK_RULES        — hardcoded safe defaults when neither above yields results
 
 Returns (rules, rules_source, parse_warnings).
 
@@ -37,12 +37,12 @@ from rules_schema import FALLBACK_RULES, Rules
 
 # Soft dependency — graceful if not installed
 try:
-    from openai import OpenAI as _OpenAI
-    _OPENAI_AVAILABLE = True
+    import anthropic as _anthropic
+    _ANTHROPIC_AVAILABLE = True
 except ImportError:
-    _OPENAI_AVAILABLE = False
+    _ANTHROPIC_AVAILABLE = False
 
-_MODEL = "gpt-4o-mini"
+_MODEL = "claude-haiku-4-5-20251001"
 
 _SYSTEM_PROMPT = """\
 You are a compliance rule extractor.
@@ -173,27 +173,28 @@ def extract_rules_from_policy(policy_text: str) -> Tuple[Rules, str, List[str]]:
     Returns:
         (rules, rules_source, parse_warnings)
     """
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
     collected_warnings: List[str] = []
 
     # ── Tier 1: AI extraction ─────────────────────────────────────────────────
-    if api_key and _OPENAI_AVAILABLE:
+    if api_key and _ANTHROPIC_AVAILABLE:
         try:
-            client = _OpenAI(api_key=api_key)
-            response = client.chat.completions.create(
+            client = _anthropic.Anthropic(api_key=api_key)
+            response = client.messages.create(
                 model=_MODEL,
+                max_tokens=512,
+                system=_SYSTEM_PROMPT,
                 messages=[
-                    {"role": "system", "content": _SYSTEM_PROMPT},
                     {
                         "role": "user",
                         "content": f"Extract rules from this policy:\n\n{policy_text}",
                     },
                 ],
-                temperature=0,
-                max_tokens=512,
-                response_format={"type": "json_object"},
             )
-            raw = response.choices[0].message.content or ""
+            raw = response.content[0].text or ""
+            # Strip markdown fences if present (```json ... ``` or ``` ... ```)
+            raw = re.sub(r"^```(?:json)?\s*", "", raw.strip(), flags=re.IGNORECASE)
+            raw = re.sub(r"\s*```$", "", raw.strip())
             data: dict = json.loads(raw)
             parse_warnings: List[str] = data.pop("parse_warnings", [])
             if not isinstance(parse_warnings, list):
@@ -209,12 +210,12 @@ def extract_rules_from_policy(policy_text: str) -> Tuple[Rules, str, List[str]]:
 
     elif not api_key:
         collected_warnings.append(
-            "OPENAI_API_KEY is not set; trying deterministic policy parser."
+            "ANTHROPIC_API_KEY is not set; trying deterministic policy parser."
         )
     else:
-        # api_key present but openai package missing
+        # api_key present but anthropic package missing
         collected_warnings.append(
-            "The 'openai' package is not installed (run: pip install openai); "
+            "The 'anthropic' package is not installed (run: pip install anthropic); "
             "trying deterministic policy parser."
         )
 
