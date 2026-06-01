@@ -133,14 +133,17 @@ def _ai_triage_summary(rule: str, risk_level: str, escalated: bool) -> str:
 
 def _enrich_exception(exc: Dict, change: Dict) -> Dict:
     """Overwrite severity to match risk_level; add escalation + AI triage fields."""
-    risk      = _exception_risk_level(exc["rule"], change)
+    rule      = exc["rule"]
+    change_id = change.get("change_id", "UNKNOWN")
+    risk      = _exception_risk_level(rule, change)
     escalated = risk in ESCALATED_RISK_LEVELS
     return {
         **exc,
+        "exception_id":             f"{change_id}::{rule}",
         "severity":                 risk,   # kept for backward compat; always == risk_level
         "risk_level":               risk,
         "escalated_to_human_queue": escalated,
-        "ai_triage_summary":        _ai_triage_summary(exc["rule"], risk, escalated),
+        "ai_triage_summary":        _ai_triage_summary(rule, risk, escalated),
         "ai_stop_reason":           AI_STOP_REASON,
     }
 
