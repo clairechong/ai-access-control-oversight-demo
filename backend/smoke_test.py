@@ -25,6 +25,7 @@ Invariant checks (unit):
   C. severity == risk_level for every exception (path A)
   D. escalated_count == count(HIGH + CRITICAL exceptions) (path A)
   E. evaluate_json *_csv aliases work + path D matches path A
+  F. exception_id present, unique, and formatted {change_id}::{rule} (path A)
   G. Policy parser: G1/G2/G3 all pass
 
 Exit codes:
@@ -288,6 +289,29 @@ if not inv_e_ok:
                 )
     failed = True
 
+# F. exception_id present, unique, and correctly formatted (path A)
+exc_ids       = [e.get("exception_id") for e in exceptions]
+id_present    = all(eid is not None for eid in exc_ids)
+id_unique     = len(exc_ids) == len(set(eid for eid in exc_ids if eid))
+id_format_ok  = all(eid and "::" in eid for eid in exc_ids if eid)
+inv_f_ok      = id_present and id_unique and id_format_ok
+print(
+    f"  F. exception_id present, unique, format {{change_id}}::{{rule}}"
+    f" : {'OK' if inv_f_ok else 'FAIL'}"
+)
+if not inv_f_ok:
+    if not id_present:
+        missing = [e["rule"] for e in exceptions if not e.get("exception_id")]
+        print(f"       missing exception_id on rules: {missing}", file=sys.stderr)
+    if not id_unique:
+        from collections import Counter as _Counter
+        dupes = [eid for eid, n in _Counter(exc_ids).items() if n > 1]
+        print(f"       duplicate exception_ids: {dupes}", file=sys.stderr)
+    if not id_format_ok:
+        bad = [eid for eid in exc_ids if eid and "::" not in eid]
+        print(f"       malformed exception_ids: {bad}", file=sys.stderr)
+    failed = True
+
 # ── section G: policy parser unit tests (no API key, no server) ───────────────
 _section("POLICY PARSER TESTS  (deterministic tier-2 extraction)")
 
@@ -434,6 +458,29 @@ if _http_ok:
                 print(f"       rule={_e['rule']} sev={_e['severity']} risk={_e['risk_level']}", file=sys.stderr)
         if _esc_http != _hc_http:
             print(f"       escalated={_esc_http} but HIGH+CRITICAL={_hc_http}", file=sys.stderr)
+        _http_failed = True
+
+    # F5. exception_id present, unique, correctly formatted via HTTP ──────────
+    _exc_ids_http   = [e.get("exception_id") for e in _http_exc]
+    _id_present_http = all(eid is not None for eid in _exc_ids_http)
+    _id_unique_http  = len(_exc_ids_http) == len(set(eid for eid in _exc_ids_http if eid))
+    _id_fmt_http     = all(eid and "::" in eid for eid in _exc_ids_http if eid)
+    _f5_ok           = _id_present_http and _id_unique_http and _id_fmt_http
+    print(
+        f"  F5. exception_id present, unique, format {{change_id}}::{{rule}} (HTTP)"
+        f" : {'OK' if _f5_ok else 'FAIL'}"
+    )
+    if not _f5_ok:
+        if not _id_present_http:
+            _missing_http = [e["rule"] for e in _http_exc if not e.get("exception_id")]
+            print(f"       missing exception_id on rules: {_missing_http}", file=sys.stderr)
+        if not _id_unique_http:
+            from collections import Counter as _Counter2
+            _dupes_http = [eid for eid, n in _Counter2(_exc_ids_http).items() if n > 1]
+            print(f"       duplicate exception_ids: {_dupes_http}", file=sys.stderr)
+        if not _id_fmt_http:
+            _bad_http = [eid for eid in _exc_ids_http if eid and "::" not in eid]
+            print(f"       malformed exception_ids: {_bad_http}", file=sys.stderr)
         _http_failed = True
 
     if _http_failed:
