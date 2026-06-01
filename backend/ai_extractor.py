@@ -67,6 +67,12 @@ Field guidance:
 - high_risk_min_distinct_approvals: minimum distinct approvers for high-risk changes.
 - emergency_grace_minutes: how many minutes after a change an emergency approval \
 is still valid.
+- approval_must_be_before_change: set true if the policy requires approvals to \
+precede the change. An emergency grace window (emergency_grace_minutes) is a \
+time-bounded exception to this rule — it does NOT mean approvals can come after \
+changes freely. If the policy mentions an emergency window, set this to true and \
+set emergency_grace_minutes to the stated window. Only set false if the policy \
+explicitly states that post-change approvals are always permitted with no time limit.
 - Boolean fields: true = the policy requires this control.
 - parse_warnings: note any ambiguities or fields not explicitly addressed; \
 empty list if none.
