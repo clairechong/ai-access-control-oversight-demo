@@ -1,4 +1,4 @@
-# Audit AI Monitor — Project Guide
+# Continuous Control Monitor — Project Guide
 
 ## What this is
 Deterministic access-change compliance evaluator. Accepts a policy file, a list of access changes, and a list of approvals. Returns a structured audit report with per-change pass/fail, exceptions with embedded evidence, a human review queue, and a Markdown memo.

@@ -1,5 +1,5 @@
 """
-Audit AI Monitor — FastAPI backend
+Continuous Control Monitor — FastAPI backend
 
 Endpoints:
   GET  /health          – liveness check
@@ -74,7 +74,7 @@ def _resolve_rules(
 
 
 app = FastAPI(
-    title="Audit AI Monitor",
+    title="Continuous Control Monitor",
     description="Deterministic access-change compliance evaluator with AI-native policy parsing",
     version="1.2.0",
 )
