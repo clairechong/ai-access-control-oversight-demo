@@ -116,7 +116,7 @@ Uses a **three-tier pipeline** — no API key required for tiers 2 and 3:
 
 | Tier | Condition | `rules_source` |
 |------|-----------|----------------|
-| 1 | `OPENAI_API_KEY` set and extraction succeeds | `ai_extracted` |
+| 1 | `ANTHROPIC_API_KEY` set and extraction succeeds | `ai_extracted` |
 | 2 | Recognised phrases found in policy text | `parsed_from_policy` |
 | 3 | Nothing extracted | `fallback_default` |
 
