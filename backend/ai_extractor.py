@@ -74,7 +74,13 @@ change." The emergency_grace_minutes field captures the permitted post-change \
 window; this field must be TRUE for that window to be enforced. Setting this to \
 false disables all timing enforcement entirely. Only set FALSE if the policy \
 explicitly states there are no timing requirements whatsoever.
-- Boolean fields: true = the policy requires this control.
+- Boolean fields: true = the policy requires this control. For all boolean \
+fields, the conservative default is TRUE — setting a field to false disables \
+a safety control entirely, which is never the safe choice. Only set a boolean \
+to false if the policy explicitly states that control does not apply.
+- require_approved_outcome: set TRUE whenever the policy indicates that approvals \
+are required or mandatory in any form. Only set FALSE if the policy explicitly \
+states no approval is needed.
 - parse_warnings: note any ambiguities or fields not explicitly addressed; \
 empty list if none.
 - If the policy is silent or ambiguous on a field, choose a conservative default \
